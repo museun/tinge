@@ -15,6 +15,12 @@ Options:
     -r <file>   Use access and modification times from this file
 ";
 
+fn error(msg: &str) -> ! {
+    eprintln!("Error! {}", msg);
+    eprintln!("{}", USAGE);
+    std::process::exit(1);
+}
+
 #[derive(Debug)]
 struct Args {
     access: bool,           // -a
@@ -22,12 +28,6 @@ struct Args {
     modify: bool,           // -m
     source: Option<String>, // -r file
     file: String,
-}
-
-fn error(msg: &str) -> ! {
-    eprintln!("Error! {}", msg);
-    eprintln!("{}", USAGE);
-    std::process::exit(1);
 }
 
 impl Args {
@@ -105,7 +105,6 @@ impl<'a> Drop for TempFile<'a> {
     }
 }
 
-// https://github.com/openbsd/src/blob/master/usr.bin/touch/touch.c
 fn main() {
     let Args {
         access,
