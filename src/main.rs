@@ -126,10 +126,6 @@ fn main() {
         let _ = File::create(&file);
     }
 
-    if !path.exists() {
-        std::process::exit(1);
-    }
-
     let df = fs::metadata(&file).unwrap();
     let dt = fs::metadata(TEMP).unwrap();
 
@@ -152,16 +148,12 @@ fn main() {
         FileTime::from_last_modification_time(&df),
     );
 
-    match (access, modify) {
-        (true, false) => {
-            let _ = filetime::set_file_times(file, tatime, fmtime);
-        }
-        (false, true) => {
-            let _ = filetime::set_file_times(file, fatime, tmtime);
-        }
-        (true, true) => {
-            let _ = filetime::set_file_times(file, tatime, tmtime);
-        }
-        _ => {}
-    }
+    let (access, modify) = match (access, modify) {
+        (true, false) => (tatime, fmtime),
+        (false, true) => (fatime, tmtime),
+        (true, true) => (tatime, tmtime),
+        _ => return,
+    };
+
+    let _ = filetime::set_file_times(file, access, modify);
 }
