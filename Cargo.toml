@@ -1,0 +1,8 @@
+[package]
+name = "tinge"
+version = "0.1.0"
+authors = ["museun <museun@outlook.com>"]
+edition = "2018"
+
+[dependencies]
+filetime = "0.2.4"
